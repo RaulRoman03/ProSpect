@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de Jugador - ProSpect</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="dashboard player-dashboard">
     <header class="dashboard-header">
@@ -61,6 +61,6 @@
     <footer class="dashboard-footer">
         <p>&copy; 2023 ScoutVision - Perfil de Jugador</p>
     </footer>
-    <script src="js/auth.js"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
 </body>
 </html>
