@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Jugador - ProSpect</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dashboard player-dashboard">
+    <header class="dashboard-header">
+        <div class="logo">ProSpect</div>
+        <nav>
+            <ul>
+                <li class="active"><a href="#">Mi Perfil</a></li>
+                <li><a href="#">Mis Videos</a></li>
+                <li><a href="#">Oportunidades</a></li>
+                <li><a href="#">Mensajes</a></li>
+                <li><a href="#" id="logout">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="dashboard-main">
+        <section class="player-profile">
+            <div class="profile-header">
+                <div class="avatar">JS</div>
+                <div class="profile-info">
+                    <h1>Juan Sánchez</h1>
+                    <p>Delantero | 18 años | México</p>
+                    <div class="stats">
+                        <span>124 vistas</span>
+                        <span>15 reclutadores interesados</span>
+                    </div>
+                </div>
+                <button class="upload-button">Subir Nuevo Video</button>
+            </div>
+
+            <div class="video-gallery">
+                <h2>Mis Videos Destacados</h2>
+                <div class="videos-container">
+                    <div class="video-card">
+                        <div class="video-thumbnail"></div>
+                        <h3>Goles Temporada 2023</h3>
+                        <p>15 vistas | 2 comentarios</p>
+                    </div>
+                    <div class="video-card">
+                        <div class="video-thumbnail"></div>
+                        <h3>Entrenamiento de Tiro</h3>
+                        <p>32 vistas | 5 comentarios</p>
+                    </div>
+                    <div class="video-card">
+                        <div class="video-thumbnail"></div>
+                        <h3>Partido Completo vs Tigres</h3>
+                        <p>45 vistas | 8 comentarios</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>&copy; 2023 ScoutVision - Perfil de Jugador</p>
+    </footer>
+    <script src="js/auth.js"></script>
+</body>
+</html>
