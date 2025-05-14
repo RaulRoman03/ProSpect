@@ -12,18 +12,18 @@
             <h1>ProSpect</h1>
             <p>Inicia sesión según tu perfil</p>
         </div>
-        <form id="loginForm">
+        <form action="{{ url_for('login') }}" method="POST">
             <div class="form-group">
                 <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" name="username" required>
             </div>
             <div class="form-group">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" required>
+                <input type="password" id="password" name="password" required>
             </div>
             <div class="form-group">
                 <label for="role">Tipo de Usuario</label>
-                <select id="role" required>
+                <select id="role" name="role" required>
                     <option value="">Selecciona tu perfil</option>
                     <option value="player">Jugador/Padre</option>
                     <option value="coach">Entrenador</option>
@@ -33,9 +33,8 @@
             <button type="submit" class="login-button">Iniciar Sesión</button>
         </form>
         <div class="login-footer">
-            <p>¿No tienes una cuenta? <a href="#">Regístrate</a></p>
+            <p>¿No tienes una cuenta? <a href="{{ url_for('register') }}">Regístrate</a></p>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
 </body>
 </html>
