@@ -66,6 +66,12 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
+# Ruta provisoria para el enlace "¿Olvidaste tu contraseña?"
+@app.route('/password_reset', methods=['GET', 'POST'])
+def password_reset():
+    # Implementa la lógica real aquí
+    return render_template('password_reset.html')
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
