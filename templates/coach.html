@@ -11,18 +11,18 @@
         <div class="logo">ProSpect</div>
         <nav>
             <ul>
-                <li class="active"><a href="#">Mi Equipo</a></li>
-                <li><a href="#">Buscar Jugadores</a></li>
-                <li><a href="#">Análisis</a></li>
-                <li><a href="#">Mensajes</a></li>
-                <li><a href="#" id="logout">Cerrar Sesión</a></li>
+                <li class="active"><a href="{{ url_for('coach_dashboard') }}">Mi Equipo</a></li>
+                <li><a href="{{ url_for('search_players') }}">Buscar Jugadores</a></li>
+                <li><a href="{{ url_for('analysis') }}">Análisis</a></li>
+                <li><a href="{{ url_for('messages') }}">Mensajes</a></li>
+                <li><a href="{{ url_for('logout') }}" id="logout">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>
 
     <main class="dashboard-main">
         <section class="coach-tools">
-            <h1>Bienvenido, Entrenador Martínez</h1>
+            <h1>Bienvenido, {{ username }}</h1>
             
             <div class="quick-actions">
                 <button class="action-button">Analizar Jugador</button>

@@ -1,7 +1,5 @@
-from flask import Flask, render_template, request, redirect, session, url_for
-from flask import flash
+from flask import Flask, render_template, request, redirect, session, url_for, flash
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')

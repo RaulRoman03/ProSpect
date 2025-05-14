@@ -11,11 +11,11 @@
         <div class="logo">ProSpect</div>
         <nav>
             <ul>
-                <li class="active"><a href="#">Mi Perfil</a></li>
-                <li><a href="#">Mis Videos</a></li>
-                <li><a href="#">Oportunidades</a></li>
-                <li><a href="#">Mensajes</a></li>
-                <li><a href="#" id="logout">Cerrar Sesión</a></li>
+                <li class="active"><a href="{{ url_for('player_profile') }}">Mi Perfil</a></li>
+                <li><a href="{{ url_for('player_videos') }}">Mis Videos</a></li>
+                <li><a href="{{ url_for('player_opportunities') }}">Oportunidades</a></li>
+                <li><a href="{{ url_for('player_messages') }}">Mensajes</a></li>
+                <li><a href="{{ url_for('logout') }}" id="logout">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>
@@ -35,7 +35,7 @@
                 <button class="upload-button">Subir Nuevo Video</button>
             </div>
 
-            <div class="video-gallery">
+            <section class="video-gallery">
                 <h2>Mis Videos Destacados</h2>
                 <div class="videos-container">
                     <div class="video-card">
@@ -54,13 +54,14 @@
                         <p>45 vistas | 8 comentarios</p>
                     </div>
                 </div>
-            </div>
+            </section>
         </section>
     </main>
 
     <footer class="dashboard-footer">
         <p>&copy; 2023 ScoutVision - Perfil de Jugador</p>
     </footer>
+
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
 </body>
 </html>
