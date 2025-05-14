@@ -1,14 +1,22 @@
 from flask import Flask, render_template, request, redirect, session, url_for, flash
-from pymongo import MongoClient
+from pymongo import MongoClient, errors
 import os
+import sys
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = os.environ.get("SECRET_KEY", "mysecretkey")
 
-MONGO_URI = os.environ.get("MONGO_URI")
-client = MongoClient(MONGO_URI)
-db = client.get_default_database()
-users = db.users
+# Fallback local para desarrollo
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/prospect")
+try:
+    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
+    # Esto lanza excepción si no logra conectar
+    client.server_info()
+    db = client.get_default_database()
+    users = db.users
+except errors.ServerSelectionTimeoutError as e:
+    print("ERROR: No se pudo conectar a MongoDB:", e, file=sys.stderr)
+    users = None  # marca que no hay DB
 
 @app.route('/')
 def home():
@@ -16,32 +24,48 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if not users:
+        flash("Base de datos no disponible", "error")
+        return redirect(url_for('home'))
+
     if request.method == 'POST':
-        role = request.form.get('role')
-        user = {
-            'username': request.form['username'],
-            'password': request.form['password'],
-            'role': role
-        }
-        if users.find_one({'username': user['username']}):
-            return render_template('register.html', error='Usuario ya existe')
-        users.insert_one(user)
+        username = request.form.get('username')
+        password = request.form.get('password')
+        role     = request.form.get('role')
+        if not username or not password or not role:
+            flash("Completa todos los campos", "error")
+            return render_template('register.html')
+        if users.find_one({'username': username}):
+            flash("El usuario ya existe", "error")
+            return render_template('register.html')
+        users.insert_one({'username': username, 'password': password, 'role': role})
+        flash("Registro exitoso, ahora inicia sesión", "success")
         return redirect(url_for('login'))
+
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if not users:
+        flash("Base de datos no disponible", "error")
+        return redirect(url_for('home'))
+
     if request.method == 'POST':
-        user = users.find_one({'username': request.form['username']})
-        if user and user['password'] == request.form['password']:
-            session['user_id'] = str(user['_id'])
+        username = request.form.get('username')
+        password = request.form.get('password')
+        role     = request.form.get('role')
+        if not username or not password or not role:
+            flash("Completa todos los campos", "error")
+            return render_template('login.html')
+        user = users.find_one({'username': username})
+        if user and user['password'] == password and user['role'] == role:
+            session['user_id']  = str(user['_id'])
             session['username'] = user['username']
-            session['role'] = user['role']
+            session['role']     = user['role']
             return redirect(url_for('dashboard'))
-        
-        flash('Credenciales incorrectas. Por favor intenta nuevamente.', 'error')
-        return render_template('login.html', form_data=request.form)
-    
+
+        flash('Credenciales incorrectas', 'error')
+
     return render_template('login.html')
 
 @app.route('/dashboard')
@@ -49,27 +73,30 @@ def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
-    role = session.get('role')
-    username = session.get('username')
-    
+    role = session['role']
+    username = session['username']
+
     if role == 'player':
         return render_template('player.html', username=username)
-    elif role == 'coach':
+    if role == 'coach':
         return render_template('coach.html', username=username)
-    elif role == 'recruiter':
+    if role == 'recruiter':
         return render_template('recruiter.html', username=username)
-    else:
-        return redirect(url_for('logout'))
+
+    # rol desconocido: cerramos sesión
+    return redirect(url_for('logout'))
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('home'))
 
-# Ruta provisoria para el enlace "¿Olvidaste tu contraseña?"
+# Ruta para recuperación de contraseña
 @app.route('/password_reset', methods=['GET', 'POST'])
 def password_reset():
-    # Implementa la lógica real aquí
+    # placeholder: implementa tu lógica
+    if request.method == 'POST':
+        flash("Funcionalidad de recuperación aún no implementada", "info")
     return render_template('password_reset.html')
 
 @app.errorhandler(404)
@@ -77,4 +104,5 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 if __name__ == '__main__':
+    # Modo debug para ver traceback en el navegador
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
