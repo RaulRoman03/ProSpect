@@ -4,10 +4,42 @@
     <meta charset="UTF-8">
     <title>Panel de Jugador</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        video {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <h1>Bienvenido, Jugador</h1>
     <p>Aquí podrás subir tus jugadas, entrenamientos y más.</p>
     <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+
+    <h2>Subir video</h2>
+    <form action="{{ url_for('upload_video') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="video" accept="video/*" required>
+        <button type="submit">Subir</button>
+    </form>
+
+    <h2>Tus publicaciones</h2>
+    {% for post in feed %}
+      <div class="card">
+        <video controls>
+            <source src="{{ post.video_url }}" type="video/mp4">
+            Tu navegador no soporta el video.
+        </video>
+        <p><strong>{{ post.user }}</strong> publicó el {{ post.timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+      </div>
+    {% else %}
+      <p>No hay videos todavía.</p>
+    {% endfor %}
 </body>
 </html>
