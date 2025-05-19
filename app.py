@@ -6,17 +6,15 @@ import sys
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = os.environ.get("SECRET_KEY", "mysecretkey")
 
-# Fallback local para desarrollo
-MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/prospect")
+MONGO_URI = os.environ.get("MONGO_URI")
 try:
     client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
-    # Esto lanza excepción si no logra conectar
     client.server_info()
     db = client.get_default_database()
     users = db.users
 except errors.ServerSelectionTimeoutError as e:
     print("ERROR: No se pudo conectar a MongoDB:", e, file=sys.stderr)
-    users = None  # marca que no hay DB
+    users = None
 
 @app.route('/')
 def home():
