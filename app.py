@@ -29,7 +29,7 @@ try:
     client.server_info()
     db = client.get_default_database()
     users = db.users
-    videos = db.videos
+    videos = db.media
 except errors.ServerSelectionTimeoutError as e:
     print("ERROR: No se pudo conectar a MongoDB:", e, file=sys.stderr)
 
