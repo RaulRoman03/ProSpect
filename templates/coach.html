@@ -1,24 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Panel de Entrenador - ProSpect</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <title>Panel de Entrenador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="dashboard coach-dashboard">
-  <header class="dashboard-header">
-    <div class="logo">ProSpect</div>
-    <nav>
-      <ul>
-        <li class="active"><a href="{{ url_for('dashboard') }}">Mi Equipo</a></li>
-        <li><a href="#">Buscar Jugadores</a></li>
-        <li><a href="#">Análisis</a></li>
-        <li><a href="#">Mensajes</a></li>
-        <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
-      </ul>
-    </nav>
-  </header>
-  <!-- contenido del panel -->
+<body>
+    <h1>Bienvenido, Entrenador</h1>
+    <p>Desde aquí puedes analizar a tus jugadores.</p>
+    <a href="{{ url_for('logout') }}">Cerrar sesión</a>
 </body>
 </html>

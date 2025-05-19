@@ -39,7 +39,7 @@ def register():
         flash("Registro exitoso", "success")
         return redirect(url_for('login'))
 
-    return render_template('register.html')
+    return render_template('register.html', form_data={})
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -48,9 +48,18 @@ def login():
         password = request.form['password']
         role = request.form['role']
         form_data = request.form.to_dict()
-        return render_template('login.html', form_data=form_data)
-    else:
-        return render_template('login.html', form_data={})
+
+        user = users.find_one({'username': username, 'password': password, 'role': role})
+        if user:
+            session['username'] = username
+            session['role'] = role
+            flash('Inicio de sesión exitoso', 'success')
+            return redirect(url_for(role))
+        else:
+            flash('Credenciales incorrectas', 'error')
+            return render_template('login.html', form_data=form_data)
+
+    return render_template('login.html', form_data={})
 
 @app.route('/player')
 def player():
@@ -80,7 +89,7 @@ def password_reset():
     if request.method == 'POST':
         flash("Si el usuario existe, se enviará un correo con instrucciones.", "info")
         return redirect(url_for('login'))
-    return render_template('password_reset.html')
+    return render_template('password_reset.html', form_data={})
 
 if __name__ == '__main__':
     app.run(debug=True)

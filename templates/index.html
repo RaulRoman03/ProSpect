@@ -1,27 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ProSpect - Plataforma de Talento Futbolístico</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <title>ProSpect - Inicio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <header>
+    <h1>Bienvenido a ProSpect</h1>
     <nav>
-      <div class="logo">ProSpect</div>
-      <ul>
-        <li><a href="{{ url_for('login') }}">Iniciar Sesión</a></li>
-        <li><a href="#features">Características</a></li>
-        <li><a href="#about">Acerca de</a></li>
-      </ul>
+        <a href="{{ url_for('login') }}">Iniciar sesión</a>
+        <a href="{{ url_for('register') }}">Registrarse</a>
     </nav>
-    <div class="hero">
-      <h1>Descubre y Desarrolla Talento Futbolístico</h1>
-      <p>La plataforma definitiva para jugadores, entrenadores y reclutadores</p>
-      <a href="{{ url_for('login') }}" class="cta-button">Empieza Ahora</a>
-    </div>
-  </header>
-  <!-- resto de tu contenido -->
 </body>
 </html>

@@ -1,24 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Panel de Reclutador - ProSpect</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <title>Panel de Reclutador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="dashboard recruiter-dashboard">
-  <header class="dashboard-header">
-    <div class="logo">ProSpect</div>
-    <nav>
-      <ul>
-        <li class="active"><a href="{{ url_for('dashboard') }}">Buscar Talentos</a></li>
-        <li><a href="#">Mis Favoritos</a></li>
-        <li><a href="#">Reportes</a></li>
-        <li><a href="#">Mensajes</a></li>
-        <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
-      </ul>
-    </nav>
-  </header>
-  <!-- contenido del panel de reclutador -->
+<body>
+    <h1>Bienvenido, Reclutador</h1>
+    <p>Explora y selecciona talentos prometedores.</p>
+    <a href="{{ url_for('logout') }}">Cerrar sesión</a>
 </body>
 </html>
