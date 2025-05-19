@@ -1,45 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Iniciar Sesión - ProSpect</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="login-container">
-    <h1>ProSpect</h1>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="alert-messages">
-          {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">{{ message }}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-    <form action="{{ url_for('login') }}" method="POST">
-      <div class="form-group">
-        <label for="username">Correo Electrónico</label>
-        <input type="email" id="username" name="username" value="{{ form_data.username if form_data }}" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" name="password" minlength="6" required>
-      </div>
-      <div class="form-group">
-        <label for="role">Tipo de Usuario</label>
-        <select id="role" name="role" required>
-          <option value="">Selecciona tu perfil</option>
-          <option value="player" {% if form_data.role == 'player' %}selected{% endif %}>Jugador/Padre</option>
-          <option value="coach" {% if form_data.role == 'coach' %}selected{% endif %}>Entrenador</option>
-          <option value="recruiter" {% if form_data.role == 'recruiter' %}selected{% endif %}>Reclutador</option>
+    <h2>Iniciar Sesión</h2>
+    <form method="POST" action="{{ url_for('login') }}">
+        <input type="text" name="username" placeholder="Usuario" required>
+        <input type="password" name="password" placeholder="Contraseña" required>
+
+        <label for="role">Rol:</label>
+        <select name="role" id="role" required>
+            <option value="player" {% if form_data and form_data.get('role') == 'player' %}selected{% endif %}>Jugador/Padre</option>
+            <option value="coach" {% if form_data and form_data.get('role') == 'coach' %}selected{% endif %}>Entrenador</option>
+            <option value="recruiter" {% if form_data and form_data.get('role') == 'recruiter' %}selected{% endif %}>Reclutador</option>
         </select>
-      </div>
-      <button type="submit">Iniciar Sesión</button>
+
+        <button type="submit">Entrar</button>
     </form>
-    <p>¿No tienes cuenta? <a href="{{ url_for('register') }}">Regístrate</a></p>
     <p><a href="{{ url_for('password_reset') }}">¿Olvidaste tu contraseña?</a></p>
-  </div>
 </body>
 </html>

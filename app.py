@@ -43,24 +43,14 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if not users:
-        flash("Base de datos no disponible", "error")
-        return redirect(url_for('home'))
-
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        user = users.find_one({'username': username, 'password': password})
-        if user:
-            session['username'] = username
-            session['role'] = user.get('role', 'player')
-            return redirect(url_for(user['role']))
-        else:
-            flash("Credenciales incorrectas", "error")
-            return redirect(url_for('login'))
-
-    return render_template('login.html')
+        username = request.form['username']
+        password = request.form['password']
+        role = request.form['role']
+        form_data = request.form.to_dict()
+        return render_template('login.html', form_data=form_data)
+    else:
+        return render_template('login.html', form_data={})
 
 @app.route('/player')
 def player():
