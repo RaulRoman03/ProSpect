@@ -121,7 +121,7 @@ def upload_video():
 
     try:
         result = cloudinary.uploader.upload_large(
-            file,
+            file.stream,
             resource_type="video"
         )
 
