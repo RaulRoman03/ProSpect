@@ -50,8 +50,8 @@ nav {
     font-size: 1.8rem;
     font-weight: bold;
     color: var(--primary-color);
-    font-family: 'Arial Black', sans-serif; /* Opcional: para un look más moderno */
-    letter-spacing: -1px; /* Opcional: ajuste de espaciado */
+    font-family: 'Arial Black', sans-serif;
+    letter-spacing: -1px;
 }
 
 nav ul {
@@ -150,7 +150,7 @@ footer {
     margin-top: 2rem;
 }
 
-/* Login page styles */
+/* Login page */
 .login-container {
     max-width: 500px;
     margin: 5rem auto;
@@ -213,7 +213,7 @@ footer {
     color: var(--gray-color);
 }
 
-/* Dashboard styles */
+/* Dashboard */
 .dashboard {
     display: grid;
     grid-template-rows: auto 1fr auto;
@@ -247,7 +247,7 @@ footer {
     padding: 1.5rem;
 }
 
-/* Player dashboard specific */
+/* Player dashboard */
 .player-dashboard .profile-header {
     display: flex;
     align-items: center;
@@ -330,7 +330,7 @@ footer {
     font-size: 0.9rem;
 }
 
-/* Coach dashboard specific */
+/* Coach dashboard */
 .coach-dashboard .quick-actions {
     display: flex;
     gap: 1rem;
@@ -386,7 +386,7 @@ footer {
     color: var(--gray-color);
 }
 
-/* Recruiter dashboard specific */
+/* Recruiter dashboard */
 .recruiter-dashboard .search-filters {
     background: white;
     padding: 1.5rem;
@@ -472,23 +472,23 @@ footer {
     opacity: 0.9;
 }
 
-/* Responsive design */
+/* Responsive */
 @media (max-width: 768px) {
     .features {
         flex-direction: column;
     }
-    
+
     .player-dashboard .profile-header {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .player-dashboard .upload-button {
         margin: 1rem auto 0;
     }
 }
 
-/* Estilos para mensajes flash */
+/* Flash messages */
 .alert-messages {
     margin-bottom: 20px;
 }
@@ -518,7 +518,7 @@ footer {
     text-decoration: underline;
 }
 
-/* Estilos para campos inválidos */
+/* Campos inválidos */
 input:invalid, select:invalid {
     border-color: #dc3545;
 }
