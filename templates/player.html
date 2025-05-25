@@ -2,44 +2,98 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel de Jugador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Jugador - ProSpect</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
-        .card {
+        .video-card {
             border: 1px solid #ccc;
+            border-radius: 12px;
             padding: 10px;
-            margin: 15px 0;
-            border-radius: 10px;
+            margin-bottom: 20px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            background-color: #fff;
         }
-        video {
-            max-width: 100%;
-            height: auto;
+        .video-card video {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .upload-section {
+            margin-top: 30px;
+            margin-bottom: 40px;
+        }
+        .upload-section form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .upload-section input[type="file"] {
+            padding: 5px;
+        }
+        .upload-section button {
+            align-self: flex-start;
+            padding: 10px 15px;
+            background-color: #2d89ef;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
         }
     </style>
 </head>
-<body>
-    <h1>Bienvenido, Jugador</h1>
-    <p>Aquí podrás subir tus jugadas, entrenamientos y más.</p>
-    <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+<body class="dashboard player-dashboard">
+    <header class="dashboard-header">
+        <div class="logo">ProSpect</div>
+        <nav>
+            <ul>
+                <li class="active"><a href="#">Mi Perfil</a></li>
+                <li><a href="#">Mis Videos</a></li>
+                <li><a href="#">Oportunidades</a></li>
+                <li><a href="#">Mensajes</a></li>
+                <li><a href="{{ url_for('logout') }}" id="logout">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <h2>Subir video</h2>
-    <form action="{{ url_for('upload_video') }}" method="POST" enctype="multipart/form-data">
-        <input type="file" name="video" accept="video/*" required>
-        <button type="submit">Subir</button>
-    </form>
+    <main class="dashboard-main">
+        <section class="player-profile">
+            <div class="profile-header">
+                <div class="avatar">JS</div>
+                <div class="profile-info">
+                    <h1>Bienvenido, Jugador</h1>
+                    <p>Sube tus jugadas, entrenamientos y partidos destacados.</p>
+                </div>
+            </div>
 
-    <h2>Tus publicaciones</h2>
-    {% for post in feed %}
-      <div class="card">
-        <video controls>
-            <source src="{{ post.video_url }}" type="video/mp4">
-            Tu navegador no soporta el video.
-        </video>
-        <p><strong>{{ post.user }}</strong> publicó el {{ post.timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
-      </div>
-    {% else %}
-      <p>No hay videos todavía.</p>
-    {% endfor %}
+            <div class="upload-section">
+                <h2>Subir nuevo video</h2>
+                <form action="{{ url_for('upload_video') }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="video" accept="video/*" required>
+                    <button type="submit">Subir</button>
+                </form>
+            </div>
+
+            <div class="video-gallery">
+                <h2>Mis Publicaciones</h2>
+                <div class="videos-container">
+                    {% for post in feed %}
+                        <div class="video-card">
+                            <video controls>
+                                <source src="{{ post.video_url }}" type="video/mp4">
+                                Tu navegador no soporta el video.
+                            </video>
+                            <p><strong>{{ post.user }}</strong> publicó el {{ post.timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
+                    {% else %}
+                        <p>No hay videos todavía.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>&copy; 2025 ProSpect - Perfil de Jugador</p>
+    </footer>
 </body>
 </html>
