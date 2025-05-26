@@ -18,9 +18,9 @@ users = None
 videos = None
 
 cloudinary.config( 
-    cloud_name = cloud_name, 
-    api_key = api_key, 
-    api_secret = api_secret,
+    cloud_name=cloud_name, 
+    api_key=api_key, 
+    api_secret=api_secret,
     secure=True
 )
 
@@ -47,6 +47,10 @@ def register():
         username = request.form.get('username')
         password = request.form.get('password')
 
+        if not username or not password:
+            flash("Usuario y contraseña son obligatorios", "error")
+            return redirect(url_for('register'))
+
         if users.find_one({'username': username}):
             flash("El usuario ya existe", "error")
             return redirect(url_for('register'))
@@ -59,6 +63,10 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if not users:
+        flash("Base de datos no disponible", "error")
+        return redirect(url_for('home'))
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -67,8 +75,19 @@ def login():
         user = users.find_one({'username': username, 'password': password})
         if user:
             session['username'] = username
+            session['role'] = user.get('role')
             flash('Inicio de sesión exitoso', 'success')
-            return redirect(url_for())
+
+            role = user.get('role')
+            if role == 'player':
+                return redirect(url_for('player'))
+            elif role == 'coach':
+                return redirect(url_for('coach'))
+            elif role == 'recruiter':
+                return redirect(url_for('recruiter'))
+            else:
+                flash("Rol desconocido", "error")
+                return redirect(url_for('login'))
         else:
             flash('Credenciales incorrectas', 'error')
             return render_template('login.html', form_data=form_data)
@@ -92,7 +111,7 @@ def player():
     if session.get('role') != 'player':
         return redirect(url_for('login'))
 
-    feed = list(videos.find({'role': 'player'}).sort('timestamp', -1))
+    feed = list(videos.find({'role': 'player'}).sort('timestamp', -1)) if videos else []
     return render_template('player.html', feed=feed)
 
 @app.route('/coach')
@@ -123,12 +142,13 @@ def upload_video():
             resource_type="video"
         )
 
-        videos.insert_one({
-            "user": session['username'],
-            "role": session['role'],
-            "video_url": result['secure_url'],
-            "timestamp": datetime.utcnow()
-        })
+        if videos:
+            videos.insert_one({
+                "user": session['username'],
+                "role": session['role'],
+                "video_url": result['secure_url'],
+                "timestamp": datetime.utcnow()
+            })
 
         flash("Video subido con éxito", "success")
     except Exception as e:
