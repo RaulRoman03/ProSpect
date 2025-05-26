@@ -15,7 +15,7 @@
                 <li><a href="#">Buscar Jugadores</a></li>
                 <li><a href="#">Análisis</a></li>
                 <li><a href="#">Mensajes</a></li>
-                <li><a href="{{ url_for('logout') }}" id="logout">Cerrar Sesión</a></li>
+                <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>
@@ -34,7 +34,6 @@
                 <h2>Mi Equipo</h2>
                 <div class="players-grid">
                     <!-- Aquí puedes renderizar tarjetas de jugadores desde Flask -->
-                    <!-- Ejemplo de una tarjeta estática: -->
                     <div class="player-card">
                         <div class="player-avatar">JS</div>
                         <h3>Juan Sánchez</h3>
@@ -52,6 +51,5 @@
     <footer class="dashboard-footer">
         <p>&copy; 2025 ProSpect - Panel de Entrenador</p>
     </footer>
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
 </body>
 </html>

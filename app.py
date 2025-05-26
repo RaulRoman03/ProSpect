@@ -49,20 +49,37 @@ def register():
         username = request.form.get('username')
         password = request.form.get('password')
         role = request.form.get('role')
+        age_range = request.form.get('age_range')
+        position = request.form.get('position')
+
+        form_data = request.form.to_dict()
 
         if not username or not password or not role:
             flash("Todos los campos son obligatorios", "error")
-            return redirect(url_for('register'))
+            return render_template('register.html', form_data=form_data)
 
         if role not in ['player', 'coach', 'recruiter']:
             flash("Rol inválido", "error")
-            return redirect(url_for('register'))
+            return render_template('register.html', form_data=form_data)
 
         if users.find_one({'username': username}):
             flash("El usuario ya existe", "error")
-            return redirect(url_for('register'))
+            return render_template('register.html', form_data=form_data)
 
-        users.insert_one({'username': username, 'password': password, 'role': role})
+        new_user = {
+            'username': username,
+            'password': password,
+            'role': role
+        }
+
+        if role == 'player':
+            if not age_range or not position:
+                flash("Para jugadores, la edad y la posición son obligatorias", "error")
+                return render_template('register.html', form_data=form_data)
+            new_user['age_range'] = age_range
+            new_user['position'] = position
+
+        users.insert_one(new_user)
         flash("Registro exitoso", "success")
         return redirect(url_for('login'))
 
@@ -123,8 +140,9 @@ def player():
         return redirect(url_for('login'))
 
     username = session.get('username')
+    user = users.find_one({'username': username}) if users else None
     feed = list(videos.find({'user': username, 'role': 'player'}).sort('timestamp', -1)) if videos else []
-    return render_template('player.html', feed=feed)
+    return render_template('player.html', feed=feed, user=user)
 
 
 @app.route('/coach')
@@ -132,7 +150,6 @@ def coach():
     if session.get('role') != 'coach':
         return redirect(url_for('login'))
 
-    # Entrenadores pueden ver todos los videos de jugadores
     feed = list(videos.find({'role': 'player'}).sort('timestamp', -1)) if videos else []
     return render_template('coach.html', feed=feed)
 
@@ -142,7 +159,6 @@ def recruiter():
     if session.get('role') != 'recruiter':
         return redirect(url_for('login'))
 
-    # Reclutadores pueden ver todos los videos de jugadores
     feed = list(videos.find({'role': 'player'}).sort('timestamp', -1)) if videos else []
     return render_template('recruiter.html', feed=feed)
 

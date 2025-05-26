@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - ProSpect</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        function togglePlayerFields() {
+            const role = document.getElementById('role').value;
+            const playerFields = document.getElementById('player-fields');
+            playerFields.style.display = (role === 'player') ? 'block' : 'none';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            togglePlayerFields();
+            document.getElementById('role').addEventListener('change', togglePlayerFields);
+        });
+    </script>
 </head>
 <body>
     <div class="login-container">
@@ -12,16 +24,19 @@
             <h1>ProSpect</h1>
             <p>Crea tu cuenta según tu perfil</p>
         </div>
+
         <form method="POST" action="{{ url_for('register') }}">
             <div class="form-group">
                 <label for="username">Usuario</label>
                 <input type="text" name="username" id="username" required placeholder="Ingresa tu usuario"
                        value="{{ form_data.username if form_data and form_data.get('username') else '' }}">
             </div>
+
             <div class="form-group">
                 <label for="password">Contraseña</label>
                 <input type="password" name="password" id="password" required placeholder="Ingresa tu contraseña">
             </div>
+
             <div class="form-group">
                 <label for="role">Tipo de Usuario</label>
                 <select name="role" id="role" required>
@@ -31,8 +46,34 @@
                     <option value="recruiter" {% if form_data and form_data.get('role') == 'recruiter' %}selected{% endif %}>Reclutador</option>
                 </select>
             </div>
+
+            <!-- Campos adicionales para jugadores -->
+            <div id="player-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="age_range">Edad</label>
+                    <select name="age_range" id="age_range">
+                        <option value="">Selecciona tu rango de edad</option>
+                        <option value="15-17" {% if form_data and form_data.get('age_range') == '15-17' %}selected{% endif %}>15-17</option>
+                        <option value="18-20" {% if form_data and form_data.get('age_range') == '18-20' %}selected{% endif %}>18-20</option>
+                        <option value="21-23" {% if form_data and form_data.get('age_range') == '21-23' %}selected{% endif %}>21-23</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="position">Posición</label>
+                    <select name="position" id="position">
+                        <option value="">Selecciona tu posición</option>
+                        <option value="Delantero" {% if form_data and form_data.get('position') == 'Delantero' %}selected{% endif %}>Delantero</option>
+                        <option value="Mediocampista" {% if form_data and form_data.get('position') == 'Mediocampista' %}selected{% endif %}>Mediocampista</option>
+                        <option value="Defensa" {% if form_data and form_data.get('position') == 'Defensa' %}selected{% endif %}>Defensa</option>
+                        <option value="Portero" {% if form_data and form_data.get('position') == 'Portero' %}selected{% endif %}>Portero</option>
+                    </select>
+                </div>
+            </div>
+
             <button type="submit" class="login-button">Registrarse</button>
         </form>
+
         <div class="login-footer">
             <p>¿Ya tienes una cuenta? <a href="{{ url_for('login') }}">Inicia sesión</a></p>
         </div>
