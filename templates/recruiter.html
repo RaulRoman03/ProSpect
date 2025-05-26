@@ -52,8 +52,19 @@
             <div class="talent-results">
                 <h2>Jugadores Destacados</h2>
                 <div class="players-grid">
-                    <!-- Aquí se incluirán dinámicamente las tarjetas de jugador -->
-                    <p>No hay jugadores disponibles en este momento.</p>
+                    {% if players %}
+                        {% for player in players %}
+                            <div class="player-card">
+                                <div class="player-avatar">
+                                    {{ player.nombre[0] }}{{ player.nombre.split(' ')[1][0] if player.nombre.split(' ')|length > 1 else '' }}
+                                </div>
+                                <h3>{{ player.nombre }}</h3>
+                                <p>{{ player.posicion }} | {{ player.edad }} años</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No hay jugadores disponibles en este momento.</p>
+                    {% endif %}
                 </div>
             </div>
         </section>

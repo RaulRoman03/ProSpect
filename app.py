@@ -159,8 +159,18 @@ def recruiter():
     if session.get('role') != 'recruiter':
         return redirect(url_for('login'))
 
-    feed = list(videos.find({'role': 'player'}).sort('timestamp', -1)) if videos else []
-    return render_template('recruiter.html', feed=feed)
+    # Obtener todos los usuarios con rol "player"
+    players_data = []
+    if users:
+        players_cursor = users.find({'role': 'player'})
+        for player in players_cursor:
+            players_data.append({
+                'nombre': player.get('username', 'Jugador'),
+                'posicion': player.get('position', 'No definida'),
+                'edad': player.get('age_range', 'No definida')
+            })
+
+    return render_template('recruiter.html', players=players_data)
 
 
 @app.route('/upload_video', methods=['POST'])
