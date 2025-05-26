@@ -17,9 +17,9 @@ api_secret = os.environ.get("api_secret")
 users = None
 videos = None
 
-cloudinary.config( 
-    cloud_name=cloud_name, 
-    api_key=api_key, 
+cloudinary.config(
+    cloud_name=cloud_name,
+    api_key=api_key,
     api_secret=api_secret,
     secure=True
 )
@@ -33,9 +33,11 @@ try:
 except errors.ServerSelectionTimeoutError as e:
     print("ERROR: No se pudo conectar a MongoDB:", e, file=sys.stderr)
 
+
 @app.route('/')
 def home():
     return render_template('index.html')
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -46,20 +48,26 @@ def register():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+        role = request.form.get('role')
 
-        if not username or not password:
-            flash("Usuario y contraseña son obligatorios", "error")
+        if not username or not password or not role:
+            flash("Todos los campos son obligatorios", "error")
+            return redirect(url_for('register'))
+
+        if role not in ['player', 'coach', 'recruiter']:
+            flash("Rol inválido", "error")
             return redirect(url_for('register'))
 
         if users.find_one({'username': username}):
             flash("El usuario ya existe", "error")
             return redirect(url_for('register'))
 
-        users.insert_one({'username': username, 'password': password, 'role': 'player'})
+        users.insert_one({'username': username, 'password': password, 'role': role})
         flash("Registro exitoso", "success")
         return redirect(url_for('login'))
 
     return render_template('register.html', form_data={})
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -94,10 +102,12 @@ def login():
 
     return render_template('login.html', form_data={})
 
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('home'))
+
 
 @app.route('/reset', methods=['GET', 'POST'])
 def password_reset():
@@ -106,25 +116,36 @@ def password_reset():
         return redirect(url_for('login'))
     return render_template('password_reset.html', form_data={})
 
+
 @app.route('/player')
 def player():
     if session.get('role') != 'player':
         return redirect(url_for('login'))
 
-    feed = list(videos.find({'role': 'player'}).sort('timestamp', -1)) if videos else []
+    username = session.get('username')
+    feed = list(videos.find({'user': username, 'role': 'player'}).sort('timestamp', -1)) if videos else []
     return render_template('player.html', feed=feed)
+
 
 @app.route('/coach')
 def coach():
     if session.get('role') != 'coach':
         return redirect(url_for('login'))
-    return render_template('coach.html')
+
+    # Entrenadores pueden ver todos los videos de jugadores
+    feed = list(videos.find({'role': 'player'}).sort('timestamp', -1)) if videos else []
+    return render_template('coach.html', feed=feed)
+
 
 @app.route('/recruiter')
 def recruiter():
     if session.get('role') != 'recruiter':
         return redirect(url_for('login'))
-    return render_template('recruiter.html')
+
+    # Reclutadores pueden ver todos los videos de jugadores
+    feed = list(videos.find({'role': 'player'}).sort('timestamp', -1)) if videos else []
+    return render_template('recruiter.html', feed=feed)
+
 
 @app.route('/upload_video', methods=['POST'])
 def upload_video():
@@ -156,6 +177,7 @@ def upload_video():
         flash("Error al subir el video", "error")
 
     return redirect(request.referrer)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
