@@ -62,15 +62,13 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        role = request.form['role']
         form_data = request.form.to_dict()
 
-        user = users.find_one({'username': username, 'password': password, 'role': role})
+        user = users.find_one({'username': username, 'password': password})
         if user:
             session['username'] = username
-            session['role'] = role
             flash('Inicio de sesión exitoso', 'success')
-            return redirect(url_for(role))
+            return redirect(url_for())
         else:
             flash('Credenciales incorrectas', 'error')
             return render_template('login.html', form_data=form_data)
