@@ -28,6 +28,7 @@
                     <option value="">Selecciona tu perfil</option>
                     <option value="player" {% if form_data and form_data.get('role') == 'player' %}selected{% endif %}>Jugador/Padre</option>
                     <option value="coach" {% if form_data and form_data.get('role') == 'coach' %}selected{% endif %}>Entrenador</option>
+                    <option value="recruiter" {% if form_data and form_data.get('role') == 'recruiter' %}selected{% endif %}>Reclutador</option>
                 </select>
             </div>
             <button type="submit" class="login-button">Registrarse</button>
