@@ -4,7 +4,6 @@ from datetime import datetime
 import os
 import sys
 import cloudinary.uploader
-from cloudinary.utils import cloudinary_url
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = os.environ.get("SECRET_KEY", "mysecretkey")
@@ -33,11 +32,9 @@ try:
 except errors.ServerSelectionTimeoutError as e:
     print("ERROR: No se pudo conectar a MongoDB:", e, file=sys.stderr)
 
-
 @app.route('/')
 def home():
     return render_template('index.html')
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -85,7 +82,6 @@ def register():
 
     return render_template('register.html', form_data={})
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if not users:
@@ -119,12 +115,10 @@ def login():
 
     return render_template('login.html', form_data={})
 
-
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('home'))
-
 
 @app.route('/reset', methods=['GET', 'POST'])
 def password_reset():
@@ -132,7 +126,6 @@ def password_reset():
         flash("Si el usuario existe, se enviará un correo con instrucciones.", "info")
         return redirect(url_for('login'))
     return render_template('password_reset.html', form_data={})
-
 
 @app.route('/player')
 def player():
@@ -144,7 +137,6 @@ def player():
     feed = list(videos.find({'user': username, 'role': 'player'}).sort('timestamp', -1)) if videos else []
     return render_template('player.html', feed=feed, user=user)
 
-
 @app.route('/coach')
 def coach():
     if session.get('role') != 'coach':
@@ -152,7 +144,6 @@ def coach():
 
     feed = list(videos.find({'role': 'player'}).sort('timestamp', -1)) if videos else []
     return render_template('coach.html', feed=feed)
-
 
 @app.route('/recruiter')
 def recruiter():
@@ -164,28 +155,27 @@ def recruiter():
         players_cursor = users.find({'role': 'player'})
         for player in players_cursor:
             players_data.append({
-                'username': player.get('username', 'Jugador'),
+                'nombre': player.get('username', 'Jugador'),
                 'posicion': player.get('position', 'No definida'),
                 'edad': player.get('age_range', 'No definida')
             })
 
     return render_template('recruiter.html', players=players_data)
 
-
 @app.route('/player_profile/<username>')
 def player_profile(username):
     if session.get('role') != 'recruiter':
         return redirect(url_for('login'))
 
-    player = users.find_one({'username': username}) if users else None
-    player_videos = list(videos.find({'user': username}).sort('timestamp', -1)) if videos else []
-
+    player = users.find_one({'username': username})
     if not player:
         flash("Jugador no encontrado", "error")
         return redirect(url_for('recruiter'))
 
-    return render_template('player_profile.html', player=player, videos=player_videos)
+    # Mismo patrón que en /player
+    feed = list(videos.find({'user': username, 'role': 'player'}).sort('timestamp', -1)) if videos else []
 
+    return render_template('player_profile.html', player=player, feed=feed)
 
 @app.route('/upload_video', methods=['POST'])
 def upload_video():
@@ -217,7 +207,6 @@ def upload_video():
         flash("Error al subir el video", "error")
 
     return redirect(request.referrer)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
