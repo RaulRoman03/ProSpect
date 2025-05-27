@@ -41,7 +41,7 @@
                 <label for="role">Tipo de Usuario</label>
                 <select name="role" id="role" required>
                     <option value="">Selecciona tu perfil</option>
-                    <option value="player" {% if form_data and form_data.get('role') == 'player' %}selected{% endif %}>Jugador/Padre</option>
+                    <option value="player" {% if form_data and form_data.get('role') == 'player' %}selected{% endif %}>Jugador</option>
                     <option value="coach" {% if form_data and form_data.get('role') == 'coach' %}selected{% endif %}>Entrenador</option>
                     <option value="recruiter" {% if form_data and form_data.get('role') == 'recruiter' %}selected{% endif %}>Reclutador</option>
                 </select>
@@ -63,10 +63,10 @@
                     <label for="position">Posición</label>
                     <select name="position" id="position">
                         <option value="">Selecciona tu posición</option>
-                        <option value="forward" {% if form_data and form_data.get('position') == 'Delantero' %}selected{% endif %}>Delantero</option>
-                        <option value="midfielder" {% if form_data and form_data.get('position') == 'Mediocampista' %}selected{% endif %}>Mediocampista</option>
-                        <option value="defender" {% if form_data and form_data.get('position') == 'Defensa' %}selected{% endif %}>Defensa</option>
-                        <option value="goalkeeper" {% if form_data and form_data.get('position') == 'Portero' %}selected{% endif %}>Portero</option>
+                        <option value="Delantero" {% if form_data and form_data.get('position') == 'Delantero' %}selected{% endif %}>Delantero</option>
+                        <option value="Mediocampista" {% if form_data and form_data.get('position') == 'Mediocampista' %}selected{% endif %}>Mediocampista</option>
+                        <option value="Defensa" {% if form_data and form_data.get('position') == 'Defensa' %}selected{% endif %}>Defensa</option>
+                        <option value="Portero" {% if form_data and form_data.get('position') == 'Portero' %}selected{% endif %}>Portero</option>
                     </select>
                 </div>
             </div>
