@@ -63,10 +63,10 @@
                     <label for="position">Posición</label>
                     <select name="position" id="position">
                         <option value="">Selecciona tu posición</option>
-                        <option value="forward" {% if form_data and form_data.get('position') == 'Delantero' %}selected{% endif %}>Delantero</option>
-                        <option value="midfielder" {% if form_data and form_data.get('position') == 'Mediocampista' %}selected{% endif %}>Mediocampista</option>
-                        <option value="defender" {% if form_data and form_data.get('position') == 'Defensa' %}selected{% endif %}>Defensa</option>
-                        <option value="goalkeeper" {% if form_data and form_data.get('position') == 'Portero' %}selected{% endif %}>Portero</option>
+                        <option value="forward" {% if form_data and form_data.get('position') == 'forward' %}selected{% endif %}>Delantero</option>
+                        <option value="midfielder" {% if form_data and form_data.get('position') == 'midfielder' %}selected{% endif %}>Mediocampista</option>
+                        <option value="defender" {% if form_data and form_data.get('position') == 'defender' %}selected{% endif %}>Defensa</option>
+                        <option value="goalkeeper" {% if form_data and form_data.get('position') == 'goalkeeper' %}selected{% endif %}>Portero</option>
                     </select>
                 </div>
             </div>
