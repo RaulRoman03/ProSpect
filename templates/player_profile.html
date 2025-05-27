@@ -2,42 +2,40 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Perfil de {{ player.username }} - ProSpect</title>
+    <title>Perfil de Jugador - ProSpect</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="profile-page">
+<body class="dashboard">
     <header class="dashboard-header">
         <div class="logo">ProSpect</div>
         <nav>
             <ul>
-                <li><a href="{{ url_for('reclutador') }}">Volver al Panel</a></li>
+                <li><a href="{{ url_for('recruiter') }}">Volver</a></li>
                 <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>
 
-    <main class="profile-main">
-        <section class="player-info">
-            <h1>{{ player.username }}</h1>
-            <p><strong>Posición:</strong> {{ player.position }}</p>
-            <p><strong>Rango de Edad:</strong> {{ player.age_range }}</p>
-        </section>
+    <main class="dashboard-main">
+        <section>
+            <h1>Perfil de {{ player.username }}</h1>
+            <p>Posición: {{ player.position }}</p>
+            <p>Edad: {{ player.age_range }}</p>
 
-        <section class="player-videos">
-            <h2>Videos del Jugador</h2>
+            <h2>Videos Subidos</h2>
             {% if feed %}
-                <div class="video-grid">
-                    {% for video in feed %}
+                <div class="video-gallery">
+                    {% for item in feed %}
                         <div class="video-item">
                             <video width="320" height="240" controls>
-                                <source src="{{ video.video_url }}" type="video/mp4">
+                                <source src="{{ item.video_url }}" type="video/mp4">
                                 Tu navegador no soporta la reproducción de video.
                             </video>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <p>Este jugador aún no ha subido videos.</p>
+                <p>Este jugador no ha subido videos aún.</p>
             {% endif %}
         </section>
     </main>

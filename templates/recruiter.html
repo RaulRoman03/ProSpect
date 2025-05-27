@@ -56,7 +56,7 @@
                 <div class="players-grid">
                     {% if players %}
                         {% for player in players %}
-                            <a href="{{ url_for('perfil_jugador', username=player.username) }}" class="player-card">
+                            <a href="{{ url_for('player_profile', username=player.username) }}" class="player-card">
                                 <div class="player-avatar">
                                     {{ player.username[0]|upper }}
                                 </div>
