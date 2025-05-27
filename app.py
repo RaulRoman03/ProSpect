@@ -6,14 +6,14 @@ import sys
 import cloudinary.uploader
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
-app.secret_key = os.environ.get("SECRET_KEY", "mysecretkey")
+app.secret_key = os.environ.get("SECRET_KEY", "miclave")
 
 MONGO_URI = os.environ.get("MONGO_URI")
 cloud_name = os.environ.get("cloud_name")
 api_key = os.environ.get("api_key")
 api_secret = os.environ.get("api_secret")
 
-users = None
+usuarios = None
 videos = None
 
 cloudinary.config(
@@ -24,61 +24,60 @@ cloudinary.config(
 )
 
 try:
-    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
-    client.server_info()
-    db = client.get_default_database()
-    users = db.users
+    cliente = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
+    cliente.server_info()
+    db = cliente.get_default_database()
+    usuarios = db.users
     videos = db.media
 except errors.ServerSelectionTimeoutError as e:
     print("ERROR: No se pudo conectar a MongoDB:", e, file=sys.stderr)
 
 
 @app.route('/')
-def home():
+def inicio():
     return render_template('index.html')
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if not users:
+@app.route('/registro', methods=['GET', 'POST'])
+def registro():
+    if not usuarios:
         flash("Base de datos no disponible", "error")
-        return redirect(url_for('home'))
+        return redirect(url_for('inicio'))
 
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        role = request.form.get('role')
-        age_range = request.form.get('age_range')
-        position = request.form.get('position')
+        nombre = request.form.get('username')
+        contraseña = request.form.get('password')
+        rol = request.form.get('role')
+        edad = request.form.get('age_range')
+        posicion = request.form.get('position')
+        datos = request.form.to_dict()
 
-        form_data = request.form.to_dict()
-
-        if not username or not password or not role:
+        if not nombre or not contraseña or not rol:
             flash("Todos los campos son obligatorios", "error")
-            return render_template('register.html', form_data=form_data)
+            return render_template('register.html', form_data=datos)
 
-        if role not in ['player', 'coach', 'recruiter']:
+        if rol not in ['player', 'coach', 'recruiter']:
             flash("Rol inválido", "error")
-            return render_template('register.html', form_data=form_data)
+            return render_template('register.html', form_data=datos)
 
-        if users.find_one({'username': username}):
+        if usuarios.find_one({'username': nombre}):
             flash("El usuario ya existe", "error")
-            return render_template('register.html', form_data=form_data)
+            return render_template('register.html', form_data=datos)
 
-        new_user = {
-            'username': username,
-            'password': password,
-            'role': role
+        nuevo_usuario = {
+            'username': nombre,
+            'password': contraseña,
+            'role': rol
         }
 
-        if role == 'player':
-            if not age_range or not position:
-                flash("Para jugadores, la edad y la posición son obligatorias", "error")
-                return render_template('register.html', form_data=form_data)
-            new_user['age_range'] = age_range
-            new_user['position'] = position
+        if rol == 'player':
+            if not edad or not posicion:
+                flash("Edad y posición son obligatorias para jugadores", "error")
+                return render_template('register.html', form_data=datos)
+            nuevo_usuario['age_range'] = edad
+            nuevo_usuario['position'] = posicion
 
-        users.insert_one(new_user)
+        usuarios.insert_one(nuevo_usuario)
         flash("Registro exitoso", "success")
         return redirect(url_for('login'))
 
@@ -87,34 +86,34 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if not users:
+    if not usuarios:
         flash("Base de datos no disponible", "error")
-        return redirect(url_for('home'))
+        return redirect(url_for('inicio'))
 
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        form_data = request.form.to_dict()
+        nombre = request.form['username']
+        contraseña = request.form['password']
+        datos = request.form.to_dict()
 
-        user = users.find_one({'username': username, 'password': password})
-        if user:
-            session['username'] = username
-            session['role'] = user.get('role')
+        usuario = usuarios.find_one({'username': nombre, 'password': contraseña})
+        if usuario:
+            session['username'] = nombre
+            session['role'] = usuario.get('role')
             flash('Inicio de sesión exitoso', 'success')
 
-            role = user.get('role')
-            if role == 'player':
-                return redirect(url_for('player'))
-            elif role == 'coach':
-                return redirect(url_for('coach'))
-            elif role == 'recruiter':
-                return redirect(url_for('recruiter'))
+            rol = usuario.get('role')
+            if rol == 'player':
+                return redirect(url_for('jugador'))
+            elif rol == 'coach':
+                return redirect(url_for('entrenador'))
+            elif rol == 'recruiter':
+                return redirect(url_for('reclutador'))
             else:
                 flash("Rol desconocido", "error")
                 return redirect(url_for('login'))
         else:
             flash('Credenciales incorrectas', 'error')
-            return render_template('login.html', form_data=form_data)
+            return render_template('login.html', form_data=datos)
 
     return render_template('login.html', form_data={})
 
@@ -122,11 +121,11 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('home'))
+    return redirect(url_for('inicio'))
 
 
 @app.route('/reset', methods=['GET', 'POST'])
-def password_reset():
+def restablecer():
     if request.method == 'POST':
         flash("Si el usuario existe, se enviará un correo con instrucciones.", "info")
         return redirect(url_for('login'))
@@ -134,18 +133,18 @@ def password_reset():
 
 
 @app.route('/player')
-def player():
+def jugador():
     if session.get('role') != 'player':
         return redirect(url_for('login'))
 
-    username = session.get('username')
-    user = users.find_one({'username': username}) if users else None
-    feed = list(videos.find({'user': username, 'role': 'player'}).sort('timestamp', -1)) if videos else []
-    return render_template('player.html', feed=feed, user=user)
+    nombre = session.get('username')
+    usuario = usuarios.find_one({'username': nombre}) if usuarios else None
+    feed = list(videos.find({'user': nombre, 'role': 'player'}).sort('timestamp', -1)) if videos else []
+    return render_template('player.html', feed=feed, user=usuario)
 
 
 @app.route('/coach')
-def coach():
+def entrenador():
     if session.get('role') != 'coach':
         return redirect(url_for('login'))
 
@@ -154,55 +153,55 @@ def coach():
 
 
 @app.route('/recruiter')
-def recruiter():
+def reclutador():
     if session.get('role') != 'recruiter':
         return redirect(url_for('login'))
 
-    position_filter = request.args.get('position')
-    age_filter = request.args.get('age_range')
+    filtro_posicion = request.args.get('position')
+    filtro_edad = request.args.get('age_range')
 
-    query = {'role': 'player'}
-    if position_filter:
-        query['position'] = position_filter
-    if age_filter:
-        query['age_range'] = age_filter
+    consulta = {'role': 'player'}
+    if filtro_posicion:
+        consulta['position'] = filtro_posicion
+    if filtro_edad:
+        consulta['age_range'] = filtro_edad
 
-    players_data = []
-    if users:
-        for player in users.find(query):
-            players_data.append({
-                'username': player.get('username'),
-                'position': player.get('position', 'No definida'),
-                'age_range': player.get('age_range', 'No definida')
+    jugadores = []
+    if usuarios:
+        for jugador in usuarios.find(consulta):
+            jugadores.append({
+                'username': jugador.get('username'),
+                'position': jugador.get('position', 'No definida'),
+                'age_range': jugador.get('age_range', 'No definida')
             })
 
-    return render_template('recruiter.html', players=players_data)
+    return render_template('recruiter.html', players=jugadores)
 
 
 @app.route('/player/<username>')
-def player_profile(username):
-    player = users.find_one({'username': username, 'role': 'player'})
-    if not player:
+def perfil_jugador(username):
+    jugador = usuarios.find_one({'username': username, 'role': 'player'})
+    if not jugador:
         flash("Jugador no encontrado", "error")
-        return redirect(url_for('recruiter'))
+        return redirect(url_for('reclutador'))
 
     feed = list(videos.find({'user': username, 'role': 'player'}).sort('timestamp', -1)) if videos else []
-    return render_template('player_profile.html', player=player, feed=feed)
+    return render_template('player_profile.html', player=jugador, feed=feed)
 
 
-@app.route('/upload_video', methods=['POST'])
-def upload_video():
+@app.route('/subir_video', methods=['POST'])
+def subir_video():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    file = request.files.get('video')
-    if not file:
+    archivo = request.files.get('video')
+    if not archivo:
         flash("No se seleccionó ningún archivo", "error")
         return redirect(request.referrer)
 
     try:
-        result = cloudinary.uploader.upload_large(
-            file.stream,
+        resultado = cloudinary.uploader.upload_large(
+            archivo.stream,
             resource_type="video"
         )
 
@@ -210,7 +209,7 @@ def upload_video():
             videos.insert_one({
                 "user": session['username'],
                 "role": session['role'],
-                "video_url": result['secure_url'],
+                "video_url": resultado['secure_url'],
                 "timestamp": datetime.utcnow()
             })
 
