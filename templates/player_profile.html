@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil del Jugador - {{ player.username }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard player-profile">
+    <header class="dashboard-header">
+        <div class="logo">ProSpect</div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('recruiter') }}">Volver a Reclutadores</a></li>
+                <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="dashboard-main">
+        <section class="profile-section">
+            <h1>Perfil de {{ player.username }}</h1>
+            <p><strong>Posición:</strong> {{ player.position }}</p>
+            <p><strong>Edad:</strong> {{ player.age_range }}</p>
+        </section>
+
+        <section class="videos-section">
+            <h2>Videos Subidos</h2>
+            {% if feed %}
+                <div class="videos-grid">
+                    {% for video in feed %}
+                        <div class="video-item">
+                            <video width="320" height="240" controls>
+                                <source src="{{ video.video_url }}" type="video/mp4">
+                                Tu navegador no soporta la reproducción de video.
+                            </video>
+                            <p class="timestamp">{{ video.timestamp.strftime('%d/%m/%Y %H:%M') }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No hay videos disponibles para este jugador.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>&copy; 2025 ProSpect</p>
+    </footer>
+</body>
+</html>
