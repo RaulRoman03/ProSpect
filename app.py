@@ -16,8 +16,6 @@ api_secret = os.environ.get("api_secret")
 users = None
 videos = None
 
-POSICIONES_ES = ["Delantero", "Mediocampista", "Defensa", "Portero"]
-
 cloudinary.config(
     cloud_name=cloud_name,
     api_key=api_key,
@@ -76,9 +74,6 @@ def register():
         if role == 'player':
             if not age_range or not position:
                 flash("Para jugadores, la edad y la posición son obligatorias", "error")
-                return render_template('register.html', form_data=form_data)
-            if position not in POSICIONES_ES:
-                flash("La posición seleccionada no es válida", "error")
                 return render_template('register.html', form_data=form_data)
             new_user['age_range'] = age_range
             new_user['position'] = position
@@ -167,7 +162,7 @@ def recruiter():
     age_filter = request.args.get('age_range')
 
     query = {'role': 'player'}
-    if position_filter in POSICIONES_ES:
+    if position_filter:
         query['position'] = position_filter
     if age_filter:
         query['age_range'] = age_filter
