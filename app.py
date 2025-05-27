@@ -153,21 +153,31 @@ def coach():
     return render_template('coach.html', feed=feed)
 
 
-@app.route('/recruiter')
+@app.route('/recruiter', methods=['GET', 'POST'])
 def recruiter():
     if session.get('role') != 'recruiter':
         return redirect(url_for('login'))
 
+    selected_position = request.form.get('position', '')
+    selected_age = request.form.get('age', '')
+
+    query = {'role': 'player'}
+
+    if selected_position:
+        query['position'] = selected_position
+    if selected_age:
+        query['age_range'] = selected_age
+
     players_data = []
     if users:
-        for player in users.find({'role': 'player'}):
+        for player in users.find(query):
             players_data.append({
                 'username': player.get('username'),
                 'position': player.get('position', 'No definida'),
                 'age_range': player.get('age_range', 'No definida')
             })
 
-    return render_template('recruiter.html', players=players_data)
+    return render_template('recruiter.html', players=players_data, selected_position=selected_position, selected_age=selected_age)
 
 
 @app.route('/player/<username>')
@@ -211,7 +221,6 @@ def upload_video():
         flash("Error al subir el video", "error")
 
     return redirect(request.referrer)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
