@@ -32,10 +32,10 @@
                         <label for="position">Posición:</label>
                         <select name="position" id="position">
                             <option value="">Todas</option>
-                            <option value="forward" {% if request.args.get('position') == 'forward' %}selected{% endif %}>Delantero</option>
-                            <option value="midfielder" {% if request.args.get('position') == 'midfielder' %}selected{% endif %}>Mediocampista</option>
-                            <option value="defender" {% if request.args.get('position') == 'defender' %}selected{% endif %}>Defensa</option>
-                            <option value="goalkeeper" {% if request.args.get('position') == 'goalkeeper' %}selected{% endif %}>Portero</option>
+                            <option value="Delantero" {% if request.args.get('position') == 'Delantero' %}selected{% endif %}>Delantero</option>
+                            <option value="Mediocampista" {% if request.args.get('position') == 'Mediocampista' %}selected{% endif %}>Mediocampista</option>
+                            <option value="Defensa" {% if request.args.get('position') == 'Defensa' %}selected{% endif %}>Defensa</option>
+                            <option value="Portero" {% if request.args.get('position') == 'Portero' %}selected{% endif %}>Portero</option>
                         </select>
                     </div>
                     <div class="filter-group">
