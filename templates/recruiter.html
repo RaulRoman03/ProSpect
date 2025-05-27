@@ -27,26 +27,28 @@
 
             <div class="search-filters">
                 <h2>Filtrar Jugadores</h2>
-                <div class="filter-group">
-                    <label for="position">Posición:</label>
-                    <select id="position">
-                        <option value="">Todas</option>
-                        <option value="forward">Delantero</option>
-                        <option value="midfielder">Mediocampista</option>
-                        <option value="defender">Defensa</option>
-                        <option value="goalkeeper">Portero</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="age">Edad:</label>
-                    <select id="age">
-                        <option value="">Todas</option>
-                        <option value="15-17">15-17</option>
-                        <option value="18-20">18-20</option>
-                        <option value="21-23">21-23</option>
-                    </select>
-                </div>
-                <button class="search-button">Buscar</button>
+                <form method="get">
+                    <div class="filter-group">
+                        <label for="position">Posición:</label>
+                        <select name="position" id="position">
+                            <option value="">Todas</option>
+                            <option value="forward" {% if request.args.get('position') == 'forward' %}selected{% endif %}>Delantero</option>
+                            <option value="midfielder" {% if request.args.get('position') == 'midfielder' %}selected{% endif %}>Mediocampista</option>
+                            <option value="defender" {% if request.args.get('position') == 'defender' %}selected{% endif %}>Defensa</option>
+                            <option value="goalkeeper" {% if request.args.get('position') == 'goalkeeper' %}selected{% endif %}>Portero</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="age_range">Edad:</label>
+                        <select name="age_range" id="age_range">
+                            <option value="">Todas</option>
+                            <option value="15-17" {% if request.args.get('age_range') == '15-17' %}selected{% endif %}>15-17</option>
+                            <option value="18-20" {% if request.args.get('age_range') == '18-20' %}selected{% endif %}>18-20</option>
+                            <option value="21-23" {% if request.args.get('age_range') == '21-23' %}selected{% endif %}>21-23</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="search-button">Buscar</button>
+                </form>
             </div>
 
             <div class="talent-results">

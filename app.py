@@ -158,9 +158,18 @@ def recruiter():
     if session.get('role') != 'recruiter':
         return redirect(url_for('login'))
 
+    position_filter = request.args.get('position')
+    age_filter = request.args.get('age_range')
+
+    query = {'role': 'player'}
+    if position_filter:
+        query['position'] = position_filter
+    if age_filter:
+        query['age_range'] = age_filter
+
     players_data = []
     if users:
-        for player in users.find({'role': 'player'}):
+        for player in users.find(query):
             players_data.append({
                 'username': player.get('username'),
                 'position': player.get('position', 'No definida'),
